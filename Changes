@@ -1,5 +1,8 @@
 Revision history for Perl extension Geo::IP::PurePerl.
 
+	Fixed bug when IP Address Not found for GeoIP Domain Names
+		(also applicable for GeoIP Organization and GeoIP ISP)
+
 1.12  June 2nd 2004
 	Added support for GeoIP Region, City, ISP and Organization (Frank Mather)
 	Updated country names

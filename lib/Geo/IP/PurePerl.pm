@@ -374,6 +374,11 @@ sub org_by_name {
   my $org_buf;
   my $org_buf_length = 0;
   my $record_pointer;
+
+  if ($seek_org == $gi->{"databaseSegments"}) {
+    return undef;
+  }
+
   $record_pointer = $seek_org + (2 * $gi->{"record_length"} - 1) * $gi->{"databaseSegments"};
   seek($gi->{"fh"}, $record_pointer, 0);
   read($gi->{"fh"},$org_buf,MAX_ORG_RECORD_LENGTH);
