@@ -444,9 +444,42 @@ sub get_ip_address() {
   }
   return $ip_address;
 }
+
 sub addr_to_num {
   my @a = split('\.',$_[0]);
   return $a[0]*16777216+$a[1]*65536+$a[2]*256+$a[3];
+}
+
+sub database_info {
+  my $gi = shift;
+  my $i = 0;
+  my $buf;
+  my $retval;
+  my $hasStructureInfo;
+  seek($gi->{fh},-3,2);  
+  for (my $i = 0;$i < STRUCTURE_INFO_MAX_SIZE;$i++) {
+    read($gi->{fh},$buf,3);
+    if ($buf eq (chr(255) . chr(255) . chr(255))) {
+      $hasStructureInfo = 1;
+      last;   
+    }
+    seek($gi->{fh},-4,1);
+  }  
+  if ($hasStructureInfo == 1) {
+    seek($gi->{fh},-6,1);
+  } else {
+    # no structure info, must be pre Sep 2002 database, go back to
+    seek($gi->{fh},-3,2);
+  }
+  for (my $i = 0;$i < DATABASE_INFO_MAX_SIZE;$i++){
+    read($gi->{fh},$buf,3);
+    if ($buf eq (chr(0). chr(0). chr(0))){
+      read($gi->{fh},$retval,$i);
+      return $retval;
+    }
+    seek($gi->{fh},-4,1);
+  }   
+  return "";
 }
 
 1;
@@ -488,8 +521,8 @@ This free database is similar to the database contained in IP::Country,
 as well as many paid databases.  It uses ARIN, RIPE, APNIC, and LACNIC
 whois to obtain the IP->Country mappings.
 
-If you require greater accuracy, MaxMind offers a Premium database
-on a paid subscription basis.
+If you require greater accuracy, MaxMind offers a paid database
+on a paid subscription basis from http://www.maxmind.com/app/country
 
 =head1 CLASS METHODS
 
@@ -548,6 +581,10 @@ Returns the full country name for an IP address.
 =item $name = $gi->country_name_by_name( $ipname );
 
 Returns the full country name for a hostname.
+
+=item $info = $gi->database_info;
+
+Returns database string, includes version, date, build number and copyright notice.
 
 =back
 
