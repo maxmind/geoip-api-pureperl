@@ -1,5 +1,8 @@
 Revision history for Perl extension Geo::IP::PurePerl.
 
+1.12  June 2nd 2004
+	Added support for GeoIP Region, City, ISP and Organization (Frank Mather)
+
 1.11  November 1st 2003
 
 The following changes contributed by Graham Barr
