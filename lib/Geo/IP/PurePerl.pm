@@ -58,19 +58,19 @@ sub new {
 sub country_code_by_addr {
   my ($gi, $ip_address) = @_;
   return unless $ip_address =~ m!^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$!;
-  return $countries[$gi->_seek_country(0, addr_to_num($ip_address), 31)];
+  return $countries[$gi->_seek_country(addr_to_num($ip_address))];
 }
 
 sub country_code3_by_addr {
   my ($gi, $ip_address) = @_;
   return unless $ip_address =~ m!^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$!;
-  return $code3s[$gi->_seek_country(0, addr_to_num($ip_address), 31)];
+  return $code3s[$gi->_seek_country(addr_to_num($ip_address))];
 }
 
 sub country_name_by_addr {
   my ($gi, $ip_address) = @_;
   return unless $ip_address =~ m!^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$!;
-  return $names[$gi->_seek_country(0, addr_to_num($ip_address), 31)];
+  return $names[$gi->_seek_country(addr_to_num($ip_address))];
 }
 
 sub _seek_country {
@@ -108,7 +108,7 @@ sub _seek_country {
     }
   }
 
-  die "Error Traversing Database for ipnum = $ipnum - Perhaps database is corrupt?";
+  print STDERR "Error Traversing Database for ipnum = $ipnum - Perhaps database is corrupt?";
 }
 
 sub country_code_by_name {
@@ -138,7 +138,7 @@ sub country_id_by_name {
     $ip_address = join('.',unpack('C4',(gethostbyname($host))[4]));
   }
   return unless $ip_address;
-  return $gi->_seek_country(0, addr_to_num($ip_address), 31);
+  return $gi->_seek_country(addr_to_num($ip_address));
 }
 
 sub addr_to_num {
