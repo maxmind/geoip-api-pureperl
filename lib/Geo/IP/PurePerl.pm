@@ -175,8 +175,18 @@ to analyze your web server logs
 to determine the countries of your visiters, for credit card fraud
 detection, and for software export controls.
 
-Free monthly updates to the database are available from
-http://www.maxmind.com/download/geoip/database/
+=head1 IP ADDRESS TO COUNTRY DATABASES
+
+The database is available for free, updated monthly:
+
+  http://www.maxmind.com/download/geoip/database/
+
+This free database is similar to the database contained in IP::Country,
+as well as many paid databases.  It uses ARIN, RIPE, APNIC, and LACNIC
+whois to obtain the IP->Country mappings.
+
+If you require greater accuracy, MaxMind offers a Premium database
+on a paid subscription basis.
 
 =head1 CLASS METHODS
 
@@ -205,17 +215,6 @@ Flags can be set to either GEOIP_STANDARD, or for faster performance
 
 Constructs a new Geo::IP object with the database located at C<$database_filename>.
 The default flag is GEOIP_STANDARD (uses less memory, but runs slower).
-
-The database is available for free, updated monthly:
-
-  http://www.maxmind.com/download/geoip/database/
-
-This free database is similar to the database contained in IP::Country,
-as well as many paid databases.  It uses ARIN, RIPE, APNIC, and LACNIC
-whois to obtain the IP->Country mappings.
-
-If you require greater accuracy, MaxMind offers a Premium database
-on a paid subscription basis.
 
 =back
 
