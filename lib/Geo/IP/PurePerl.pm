@@ -249,6 +249,11 @@ Returns the full country name for a hostname.
 
 =back
 
+=head1 MAILING LISTS AND CVS
+
+Are available from SourceForge, see
+http://sourceforge.net/projects/geoip/
+
 =head1 VERSION
 
 1.10
