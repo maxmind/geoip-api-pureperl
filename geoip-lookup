@@ -22,9 +22,9 @@ to print the country name.
 
 =head1 EXAMPLE
 
-Lookup up country for IP address 65.15.30.247
+Lookup up country for IP address 24.24.24.24
 
- # geoip-lookup 65.15.30.247
+ # geoip-lookup 24.24.24.24
  United States
 
 =head1 AUTHOR

@@ -158,8 +158,8 @@ Geo::IP::PurePerl - Look up country by IP Address
 
   my $gi = Geo::IP::PurePerl->new(GEOIP_STANDARD);
 
-  # look up IP address '65.15.30.247'
-  my $country = $gi->country_code_by_addr('65.15.30.247');
+  # look up IP address '24.24.24.24'
+  my $country = $gi->country_code_by_addr('24.24.24.24');
   $country = $gi->country_code_by_name('yahoo.com');
   # $country is equal to "US"
 
