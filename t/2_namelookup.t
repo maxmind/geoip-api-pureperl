@@ -1,4 +1,19 @@
 use strict;
+use vars qw($dat);
+
+BEGIN {
+  foreach my $file ("GeoIP.dat",'/usr/local/share/GeoIP/GeoIP.dat') {
+    if (-f $file) {
+      $dat = $file;
+      last;
+    }
+  }
+  unless ($dat) {
+    print "1..0 # skip No GeoIP.dat found\n";
+    exit;
+  }
+}
+
 use Test;
 
 $^W = 1;
@@ -7,7 +22,7 @@ BEGIN { plan tests => 13 }
 
 use Geo::IP::PurePerl;
 
-my $gi = Geo::IP::PurePerl->new();
+my $gi = Geo::IP::PurePerl->new($dat);
 
 while (<DATA>) {
   chomp;
