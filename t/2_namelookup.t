@@ -18,7 +18,7 @@ use Test;
 
 $^W = 1;
 
-BEGIN { plan tests => 13 }
+BEGIN { plan tests => 12 }
 
 use Geo::IP::PurePerl;
 
