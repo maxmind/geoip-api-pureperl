@@ -2,6 +2,10 @@ Changes
 COPYING
 lib/Geo/IP/PurePerl.pm
 geoip-lookup
+geoip-lookup-city
+geoip-lookup-isp
+geoip-lookup-org
+geoip-lookup-region
 Makefile.PL
 MANIFEST
 README
@@ -9,3 +13,4 @@ INSTALL
 t/0_base.t
 t/1_lookup.t
 t/2_namelookup.t
+META.yml                                 Module meta-data (added by MakeMaker)

@@ -2,8 +2,10 @@ Revision history for Perl extension Geo::IP::PurePerl.
 
 1.14  December 24th 2004
 	Added database_info method (Frank Mather)
+	Added example scripts to MANIFEST
 
 1.13  October 3rd 2004
+	Updated test case, removed www.bundesregierung.de
 	Fixed bug when IP Address Not found for GeoIP Domain Names
 		(also applicable for GeoIP Organization and GeoIP ISP)
 
