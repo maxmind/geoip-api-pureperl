@@ -1,6 +1,9 @@
 Revision history for Perl extension Geo::IP::PurePerl.
 
-1.10
+1.10  November 22nd 2002
+      GeoIP Free Database is now updated monthly!
+      Added install file.
+      First upload to CPAN.
       ! IMPORTANT API CHANGE - now returns undef instead of '--' or
       'N/A' when country not found.
       rewrote _seek_country to use loop instead of recursion for faster performance

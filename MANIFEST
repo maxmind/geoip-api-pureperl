@@ -5,6 +5,7 @@ geoip-lookup
 Makefile.PL
 MANIFEST
 README
+INSTALL
 t/0_base.t
 t/1_lookup.t
 t/2_namelookup.t

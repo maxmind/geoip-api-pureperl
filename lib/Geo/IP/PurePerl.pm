@@ -167,7 +167,7 @@ Geo::IP::PurePerl - Look up country by IP Address
 =head1 DESCRIPTION
 
 This module uses a file based database.  This database simply contains
-IP blocks as keys, and countries as values.  This database should be more
+IP blocks as keys, and countries as values.  This database is  more
 complete and accurate than reverse DNS lookups.
 
 This module can be used to automatically select the geographically closest mirror,
@@ -175,9 +175,8 @@ to analyze your web server logs
 to determine the countries of your visiters, for credit card fraud
 detection, and for software export controls.
 
-To find a country for an IP address, this module a Network
-that contains the IP address, then returns the country the Network is
-assigned to.
+Free monthly updates to the database are available from
+http://www.maxmind.com/download/geoip/database/
 
 =head1 CLASS METHODS
 
@@ -207,13 +206,16 @@ Flags can be set to either GEOIP_STANDARD, or for faster performance
 Constructs a new Geo::IP object with the database located at C<$database_filename>.
 The default flag is GEOIP_STANDARD (uses less memory, but runs slower).
 
-A free version of the data file is distributed with the C Library from
+The database is available for free, updated monthly:
 
-  http://maxmind.com/geoip/
+  http://www.maxmind.com/download/geoip/database/
 
-MaxMind intends to update the free data file anually. If you need more
-current data, they will sell either the most current data set, or year-long
-subscriptions to monthly updates. See their web site for details.
+This free database is similar to the database contained in IP::Country,
+as well as many paid databases.  It uses ARIN, RIPE, APNIC, and LACNIC
+whois to obtain the IP->Country mappings.
+
+If you require greater accuracy, MaxMind offers a Premium database
+on a paid subscription basis.
 
 =back
 
