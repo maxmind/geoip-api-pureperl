@@ -1,0 +1,21 @@
+Revision history for Perl extension Geo::IP::PurePerl.
+
+1.10
+      ! IMPORTANT API CHANGE - now returns undef instead of '--' or
+      'N/A' when country not found.
+      rewrote _seek_country to use loop instead of recursion for faster performance
+
+0.28  September 12th 2002
+      Added Memory Cache mode (Matt Wickline)
+      Added ISO 3166-1 alpha-3 code and country names (Matt Wickline)
+      Added open method, conform new to XS API (Matt Wickline)
+      Added more POD (Matt Wickline)
+
+0.27  September 11th 2002
+      Fixed database location in examples and tests
+      Module throws error if it can't locate database file
+      Removed DB_File dependency
+
+0.26  August 20th 2002
+      First release under the Geo::IP::PurePerl name,
+      repackaged from Geo::IP version 0.07

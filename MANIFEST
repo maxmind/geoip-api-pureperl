@@ -1,0 +1,10 @@
+Changes
+COPYING
+lib/Geo/IP/PurePerl.pm
+geoip-lookup
+Makefile.PL
+MANIFEST
+README
+t/0_base.t
+t/1_lookup.t
+t/2_namelookup.t
