@@ -43,5 +43,4 @@ __DATA__
 203.15.106.23	AU
 196.31.1.1	ZA
 yahoo.com	US
-www.bundesregierung.de	DE
 www.gov.ru	RU
