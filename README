@@ -10,10 +10,10 @@ to determine the countries of your visitors.
 To install, see the INSTALL file.
 
 To find a country for an IP address, this module uses the database
-contained in /usr/local/share/GeoIP/Geo-IP.dat to find a Network
+contained in /usr/local/share/GeoIP/GeoIP.dat to find a Network
 that contains the IP address.
 
-Copyright (c) 2002, MaxMind.com, support@maxmind.com
+Copyright (c) 2003, MaxMind LLC, support@maxmind.com
 
 All rights reserved.  This package is free software and is licensed under
 the GPL.  For details, see the COPYING file.
