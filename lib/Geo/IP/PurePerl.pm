@@ -6,7 +6,7 @@ use vars qw(@ISA $VERSION @EXPORT);
 use constant COUNTRY_BEGIN => 16776960;
 use constant RECORD_LENGTH => 3;
 
-$VERSION = '1.10';
+$VERSION = '1.11';
 
 require Exporter;
 @ISA = qw(Exporter);
@@ -30,10 +30,10 @@ sub open {
   CORE::open $fh, "$db_file" or die "Error opening $db_file";
   binmode($fh);
   if ($flags && $flags & GEOIP_MEMORY_CACHE == 1) {
-    my $buf;
     local($/) = undef;
-    $buf = <$fh>;
-    bless {buf => $buf}, $class;
+    my %self;
+    $self{buf} = <$fh>;
+    bless \%self, $class;
   } else {
     bless {fh => $fh}, $class;
   }
@@ -77,7 +77,6 @@ sub _seek_country {
   my ($gi, $ipnum) = @_;
 
   my $fh  = $gi->{fh};
-  my $buf = $gi->{buf};
   my $offset = 0;
 
   my ($x0, $x1);
@@ -88,12 +87,12 @@ sub _seek_country {
       read $fh, $x0, RECORD_LENGTH;
       read $fh, $x1, RECORD_LENGTH;
     } else {
-      $x0 = substr($buf, $offset * 2 * RECORD_LENGTH, RECORD_LENGTH);
-      $x1 = substr($buf, $offset * 2 * RECORD_LENGTH + RECORD_LENGTH, RECORD_LENGTH);
+      $x0 = substr($gi->{buf}, $offset * 2 * RECORD_LENGTH, RECORD_LENGTH);
+      $x1 = substr($gi->{buf}, $offset * 2 * RECORD_LENGTH + RECORD_LENGTH, RECORD_LENGTH);
     }
 
-    $x0 = unpack("I1", $x0."\0");
-    $x1 = unpack("I1", $x1."\0");
+    $x0 = unpack("V1", $x0."\0");
+    $x1 = unpack("V1", $x1."\0");
 
     if ($ipnum & (1 << $depth)) {
       if ($x1 >= COUNTRY_BEGIN) {

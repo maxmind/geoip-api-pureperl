@@ -1,5 +1,23 @@
 Revision history for Perl extension Geo::IP::PurePerl.
 
+1.11  November 1st 2003
+
+The following changes contributed by Graham Barr
+
+* The "I1" template for unpack is machine dependent. It seems to be 
+that you generate the GeoIP.dat file on a little-endian machine. This 
+causes everything to fail on a big-endian machine. The patch changes 
+unpack to use "V1", which will unpack a little-endian integer and be 
+platform independent.
+
+* The in-memory cache was causing the buffer to be copied several 
+times. The patch causes the data to be read directly into the hash and 
+also avoids copying in _seek_country
+
+* Tests 1_lookup.t and 2_namelookup.t fail if there is no GeoIP.dat 
+file in /usr/local. The patch makes these tests skip if GeoIP.dat 
+cannot be found.
+
       Changed Taiwan, Province of China to Taiwan
 
 1.10  November 22nd 2002
