@@ -1,5 +1,7 @@
 Revision history for Perl extension Geo::IP::PurePerl.
 
+      Changed Taiwan, Province of China to Taiwan
+
 1.10  November 22nd 2002
       GeoIP Free Database is now updated monthly!
       Added install file.
