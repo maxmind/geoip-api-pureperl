@@ -28,7 +28,7 @@ use constant WORLD_OFFSET => 1353;
 use constant FIPS_RANGE => 360;
 
 
-$VERSION = '1.12';
+$VERSION = '1.14';
 
 require Exporter;
 @ISA = qw(Exporter);
@@ -595,7 +595,7 @@ http://sourceforge.net/projects/geoip/
 
 =head1 VERSION
 
-1.12
+1.14
 
 =head1 AUTHOR
 
