@@ -553,11 +553,11 @@ http://sourceforge.net/projects/geoip/
 
 =head1 VERSION
 
-1.10
+1.12
 
 =head1 AUTHOR
 
-Copyright (c) 2002 MaxMind.com
+Copyright (c) 2004 MaxMind LLC
 
 All rights reserved.  This package is free software; it is licensed
 under the GPL.
