@@ -49,7 +49,7 @@ my $addr = shift || usage();
 
 my $gi = Geo::IP::PurePerl->new();
 
-my $code = $gi->country_code_by_addr($addr);
+my $code = $gi->country_code_by_name($addr);
 
 if ($opts{l}) {
   eval { require Locale::Country; }

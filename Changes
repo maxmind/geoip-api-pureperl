@@ -1,5 +1,7 @@
 Revision history for Perl extension Geo::IP::PurePerl.
 
+	Fixed geoip-lookup to work with hostnames
+
 1.14  December 24th 2004
 	Added database_info method (Frank Mather)
 	Added example scripts to MANIFEST
