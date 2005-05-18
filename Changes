@@ -1,5 +1,7 @@
 Revision history for Perl extension Geo::IP::PurePerl.
 
+1.15  May 17th 2005
+	Fixed warning messages with GeoIP City lookups (Frank Mather)
 	Fixed geoip-lookup to work with hostnames
 
 1.14  December 24th 2004
