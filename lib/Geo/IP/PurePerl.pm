@@ -28,7 +28,7 @@ use constant WORLD_OFFSET => 1353;
 use constant FIPS_RANGE => 360;
 
 
-$VERSION = '1.14';
+$VERSION = '1.15';
 
 require Exporter;
 @ISA = qw(Exporter);
@@ -245,17 +245,17 @@ sub get_city_record {
   my $record_buf_pos;
   my $char;
   my $dmaarea_combo;
-  my $record_country_code;
-  my $record_country_code3;
-  my $record_country_name;
-  my $record_region;
-  my $record_city;
-  my $record_postal_code;
-  my $record_latitude;
-  my $record_longitude;
-  my $record_dma_code;
-  my $record_area_code;
-  my $str_length;
+  my $record_country_code = "";
+  my $record_country_code3 = "";
+  my $record_country_name = "";
+  my $record_region = "";
+  my $record_city = "";
+  my $record_postal_code = "";
+  my $record_latitude = "";
+  my $record_longitude = "";
+  my $record_dma_code = "";
+  my $record_area_code = "";
+  my $str_length = 0;
   my $i;
   my $j;
 
@@ -333,7 +333,7 @@ sub get_city_record {
   #get the dma code and the area code
   if (GEOIP_CITY_EDITION_REV1 == $gi->{"databaseType"}) {
     $dmaarea_combo = 0;
-    if ($record_country_code == "US") {
+    if ($record_country_code eq "US") {
       #if the country is US then read the dma area combo
       for ($j = 0;$j < 3;++$j) {
         $char = ord(substr($record_buf,$record_buf_pos++,1));
@@ -595,7 +595,7 @@ http://sourceforge.net/projects/geoip/
 
 =head1 VERSION
 
-1.14
+1.15
 
 =head1 AUTHOR
 
