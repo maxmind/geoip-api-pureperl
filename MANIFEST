@@ -6,6 +6,7 @@ geoip-lookup-city
 geoip-lookup-isp
 geoip-lookup-org
 geoip-lookup-region
+geoip-lookup-netspeed
 Makefile.PL
 MANIFEST
 README
