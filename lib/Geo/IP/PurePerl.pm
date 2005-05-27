@@ -28,7 +28,7 @@ use constant CANADA_OFFSET => 677;
 use constant WORLD_OFFSET => 1353;
 use constant FIPS_RANGE => 360;
 
-$VERSION = '1.15';
+$VERSION = '1.16';
 
 require Exporter;
 @ISA = qw(Exporter);
@@ -607,7 +607,7 @@ http://sourceforge.net/projects/geoip/
 
 =head1 VERSION
 
-1.15
+1.16
 
 =head1 AUTHOR
 
