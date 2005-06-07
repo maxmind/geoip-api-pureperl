@@ -61,7 +61,8 @@ sub open {
     local($/) = undef;
     my %self;
     $self{buf} = <$fh>;
-    bless \%self, $class;
+    $gi = bless \%self, $class;
+    $gi->_setup_segments(); 
   } else {
     $gi = bless {fh => $fh}, $class;
     $gi->_setup_segments();
