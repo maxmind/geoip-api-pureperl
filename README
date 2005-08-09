@@ -13,7 +13,9 @@ To find a country for an IP address, this module uses the database
 contained in /usr/local/share/GeoIP/GeoIP.dat to find a Network
 that contains the IP address.
 
-Copyright (c) 2004, MaxMind LLC, support@maxmind.com
+For more details on GeoIP products, see http://www.maxmind.com/
+
+Copyright (c) 2005, MaxMind LLC, support@maxmind.com
 
 All rights reserved.  This package is free software and is licensed under
 the GPL.  For details, see the COPYING file.

@@ -28,7 +28,7 @@ use constant CANADA_OFFSET => 677;
 use constant WORLD_OFFSET => 1353;
 use constant FIPS_RANGE => 360;
 
-$VERSION = '1.16';
+$VERSION = '1.17';
 
 require Exporter;
 @ISA = qw(Exporter);
