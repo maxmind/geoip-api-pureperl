@@ -7,7 +7,7 @@ use Geo::IP::PurePerl;
 
 my $addr = shift;
 
-my $gi = Geo::IP::PurePerl->new("/usr/local/share/GeoIP/GeoIPISP2.dat",GEOIP_STANDARD);
+my $gi = Geo::IP::PurePerl->new("/usr/local/share/GeoIP/GeoIPISP.dat",GEOIP_STANDARD);
 
 my $isp = $gi->org_by_name($addr);
 
