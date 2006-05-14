@@ -1,6 +1,8 @@
 package Geo::IP::PurePerl;
 
 use strict;
+use FileHandle;
+
 use vars qw(@ISA $VERSION @EXPORT);
 
 use constant FULL_RECORD_LENGTH => 50;
@@ -53,7 +55,7 @@ sub open {
   die "Geo::IP::PurePerl::open() requires a path name"
     unless( @_ > 1 and $_[1] );
   my ($class, $db_file, $flags) = @_;
-  my $fh;
+  my $fh = new FileHandle;
   my $gi;
   CORE::open $fh, "$db_file" or die "Error opening $db_file";
   binmode($fh);

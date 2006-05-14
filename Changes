@@ -1,5 +1,7 @@
 Revision history for Perl extension Geo::IP::PurePerl.
 
+	Now works with Perl 5.004 (Sébastien Aperghis-Tramoni, http://rt.cpan.org/Public/Bug/Display.html?id=19237)
+
 1.17  August 9th 2005
 	Replaced Yugoslavia with Serbia and Montenegro
 	Fixed bug when GEOIP_MEMORY is set (http://rt.cpan.org/NoAuth/Bug.html?id=13073)
