@@ -1,5 +1,7 @@
 Revision history for Perl extension Geo::IP::PurePerl.
 
+	Fixed alpha-3 codes ordering, replaced TLS,TKM,TUN,TON with TKM,TUN,TON,TLS
+	TP/East Timor changed to TL/Timor-Leste, reflecting changes in ISO-3166
 	Now works with Perl 5.004 (Sébastien Aperghis-Tramoni, http://rt.cpan.org/Public/Bug/Display.html?id=19237)
 
 1.17  August 9th 2005
