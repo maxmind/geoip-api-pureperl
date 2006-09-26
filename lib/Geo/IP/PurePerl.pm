@@ -62,6 +62,7 @@ sub open {
   if ($flags && $flags & GEOIP_MEMORY_CACHE == 1) {
     local($/) = undef;
     my %self;
+    $self{fh} = $fh;
     $self{buf} = <$fh>;
     $gi = bless \%self, $class;
     $gi->_setup_segments(); 
