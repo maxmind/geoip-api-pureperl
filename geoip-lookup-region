@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -Ilib -w
 
 use strict;
 
@@ -8,9 +8,9 @@ use Geo::IP::PurePerl;
 #use Locale::Country;
 
 
-my $addr = shift;
+my $addr = $ARGV[0];
 
-my $gi = Geo::IP::PurePerl->new("/usr/local/share/GeoIP/GeoIPRegion1.dat",GEOIP_STANDARD);
+my $gi = Geo::IP::PurePerl->new("/usr/local/share/GeoIP/GeoIPRegion.dat",GEOIP_STANDARD);
 
 my ($country,$region) = $gi->region_by_name($addr);
 
