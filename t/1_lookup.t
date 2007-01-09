@@ -22,7 +22,7 @@ BEGIN { plan tests => 18 }
 
 use Geo::IP::PurePerl;
 
-my $gi = Geo::IP::PurePerl->new($dat);
+my $gi = Geo::IP::PurePerl->new(GEOIP_MEMORY_CACHE);
 
 while (<DATA>) {
   chomp;
