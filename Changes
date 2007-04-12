@@ -1,5 +1,7 @@
 Revision history for Perl extension Geo::IP::PurePerl.
 
+	Corrected path to /usr/local/share/GeoIP/GeoIP.dat in geoip-lookup program.
+
 1.18  January 8th 2007
 	Replaced CS/Serbia and Montenegro with RS/Serbia, removed ZR/Zaire, added ME/Montenegro
 	Added AX/Aland Islands, GG/Guernsey, IM/Isle of Man, JE/Jersey (ISO-3166-1 changes)

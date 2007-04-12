@@ -15,7 +15,7 @@ geoip-lookup - lookup country for IP address or hostname
 
 The I<geoip-lookup> program will return the country for the IP address or
 hostname given as the first command line argument.
-It queries uses the database in C</usr/local/share/GeoIP/Geo-IP.dat>.
+It queries the GeoIP Country database in C</usr/local/share/GeoIP/GeoIP.dat>.
 
 By default it prints the ISO 3166 country code.  Use the C<-l> option
 to print the country name.
