@@ -18,7 +18,7 @@ use constant GEOIP_REGION_EDITION_REV1 => 3;
 use constant GEOIP_CITY_EDITION_REV0 => 111;
 use constant GEOIP_CITY_EDITION_REV1 => 2;
 use constant GEOIP_ORG_EDITION => 110;
-use constant GEOIP_ISP_EDITION => 109;
+use constant GEOIP_ISP_EDITION => 4;
 use constant GEOIP_NETSPEED_EDITION => 10;
 use constant SEGMENT_RECORD_LENGTH => 3;
 use constant STANDARD_RECORD_LENGTH => 3;
@@ -136,7 +136,8 @@ sub _setup_segments {
 
         #record length is four for ISP databases and ORG databases
         #record length is three for country databases, region database and city databases
-        if ($gi->{"databaseType"} == GEOIP_ORG_EDITION) {
+        if ($gi->{"databaseType"} == GEOIP_ORG_EDITION ||
+	    $gi->{"databaseType"} == GEOIP_ISP_EDITION) {
           $gi->{"record_length"} = ORG_RECORD_LENGTH;
         }
       }

@@ -1,5 +1,6 @@
 Revision history for Perl extension Geo::IP::PurePerl.
 
+	Now works with new format of GeoIP ISP
 	Corrected path to /usr/local/share/GeoIP/GeoIP.dat in geoip-lookup program.
 
 1.18  January 8th 2007
