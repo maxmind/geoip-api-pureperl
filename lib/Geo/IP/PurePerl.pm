@@ -447,7 +447,8 @@ sub region_by_name {
     }
   }
 }
-sub get_ip_address() {
+
+sub get_ip_address {
   my ($gi, $host) = @_;
   my $ip_address;
   #check if host is ip address 
