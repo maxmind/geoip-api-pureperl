@@ -30,20 +30,38 @@ use constant CANADA_OFFSET => 677;
 use constant WORLD_OFFSET => 1353;
 use constant FIPS_RANGE => 360;
 
-$VERSION = '1.18';
+$VERSION = '1.19';
 
 require Exporter;
 @ISA = qw(Exporter);
 
+# cheat --- try to load Sys::Mmap
+BEGIN {
+  eval "require Sys::Mmap"
+    ? Sys::Mmap->import
+    : do {
+    for (qw/ PROT_READ MAP_PRIVATE MAP_SHARED /) {
+      no strict 'refs';
+      my $unused_stub = $_; # we must use a copy
+      *$unused_stub = sub { die 'Sys::Mmap required for mmap support' };
+    }
+  } # do
+} # begin
+
+
 sub GEOIP_STANDARD(){0;}
 sub GEOIP_MEMORY_CACHE(){1;}
+
+#sub GEOIP_CHECK_CACHE(){2;}
+#sub GEOIP_INDEX_CACHE(){4;}
+sub GEOIP_MMAP_CACHE(){8;}
 
 sub GEOIP_UNKNOWN_SPEED(){0;}
 sub GEOIP_DIALUP_SPEED(){1;}
 sub GEOIP_CABLEDSL_SPEED(){2;}
 sub GEOIP_CORPORATE_SPEED(){3;}
 
-@EXPORT = qw( GEOIP_STANDARD GEOIP_MEMORY_CACHE
+@EXPORT = qw( GEOIP_STANDARD GEOIP_MEMORY_CACHE GEOIP_MMAP_CACHE
 	      GEOIP_UNKNOWN_SPEED GEOIP_DIALUP_SPEED GEOIP_CABLEDSL_SPEED GEOIP_CORPORATE_SPEED );
 my @countries = 
 (undef,"AP","EU","AD","AE","AF","AG","AI","AL","AM","AN","AO","AQ","AR","AS","AT","AU","AW","AZ","BA","BB","BD","BE","BF","BG","BH","BI","BJ","BM","BN","BO","BR","BS","BT","BV","BW","BY","BZ","CA","CC","CD","CF","CG","CH","CI","CK","CL","CM","CN","CO","CR","CU","CV","CX","CY","CZ","DE","DJ","DK","DM","DO","DZ","EC","EE","EG","EH","ER","ES","ET","FI","FJ","FK","FM","FO","FR","FX","GA","GB","GD","GE","GF","GH","GI","GL","GM","GN","GP","GQ","GR","GS","GT","GU","GW","GY","HK","HM","HN","HR","HT","HU","ID","IE","IL","IN","IO","IQ","IR","IS","IT","JM","JO","JP","KE","KG","KH","KI","KM","KN","KP","KR","KW","KY","KZ","LA","LB","LC","LI","LK","LR","LS","LT","LU","LV","LY","MA","MC","MD","MG","MH","MK","ML","MM","MN","MO","MP","MQ","MR","MS","MT","MU","MV","MW","MX","MY","MZ","NA","NC","NE","NF","NG","NI","NL","NO","NP","NR","NU","NZ","OM","PA","PE","PF","PG","PH","PK","PL","PM","PN","PR","PS","PT","PW","PY","QA","RE","RO","RU","RW","SA","SB","SC","SD","SE","SG","SH","SI","SJ","SK","SL","SM","SN","SO","SR","ST","SV","SY","SZ","TC","TD","TF","TG","TH","TJ","TK","TM","TN","TO","TL","TR","TT","TV","TW","TZ","UA","UG","UM","US","UY","UZ","VA","VC","VE","VG","VI","VN","VU","WF","WS","YE","YT","RS","ZA","ZM","ME","ZW","A1","A2","AX","GG","IM","JE");
@@ -54,22 +72,31 @@ sub open {
   die "Geo::IP::PurePerl::open() requires a path name"
     unless( @_ > 1 and $_[1] );
   my ($class, $db_file, $flags) = @_;
-  my $fh = new FileHandle;
+  my $fh = FileHandle->new;
   my $gi;
-  CORE::open $fh, "$db_file" or die "Error opening $db_file";
+  CORE::open $fh, $db_file or die "Error opening $db_file";
   binmode($fh);
-  if ($flags && $flags & GEOIP_MEMORY_CACHE == 1) {
-    local($/) = undef;
+  if ( $flags && ( $flags & ( GEOIP_MEMORY_CACHE | GEOIP_MMAP_CACHE ) ) ) {
     my %self;
+
+    if ( $flags & GEOIP_MMAP_CACHE ) {
+      die "Sys::Mmap required for MMAP support"
+        unless defined $Sys::Mmap::VERSION;
+      mmap( $self{buf} = undef, 0, PROT_READ, MAP_PRIVATE, $fh )
+        or die "mmap: $!";
+    }
+    else {
+      local $/ = undef;
+      $self{buf} = <$fh>;
+    }
     $self{fh} = $fh;
-    $self{buf} = <$fh>;
     $gi = bless \%self, $class;
-    $gi->_setup_segments(); 
-  } else {
-    $gi = bless {fh => $fh}, $class;
-    $gi->_setup_segments();
-    return $gi;
   }
+  else {
+    $gi = bless { fh => $fh }, $class;
+  }
+  $gi->_setup_segments();
+  return $gi;
 }
 
 sub new {
@@ -79,7 +106,7 @@ sub new {
   if ( !defined $db_file ) {
     # called as new()
     $db_file = '/usr/local/share/GeoIP/GeoIP.dat';
-  } elsif ( $db_file eq GEOIP_MEMORY_CACHE  or  $db_file eq GEOIP_STANDARD ) {
+  } elsif ( $db_file =~ /^\d+$/	) {
     # called as new( $flags )
     $flags = $db_file;
     $db_file = '/usr/local/share/GeoIP/GeoIP.dat';
@@ -163,14 +190,17 @@ sub _seek_country {
 
   my ($x0, $x1);
 
+  my $reclen = $gi->{"record_length"};
+
   for (my $depth = 31; $depth >= 0; $depth--) {
-    if ($fh) {
-      seek $fh, $offset * 2 * $gi->{"record_length"}, 0;
-      read $fh, $x0, $gi->{"record_length"};
-      read $fh, $x1, $gi->{"record_length"};
+    unless ( exists $gi->{buf} ) {
+      seek $fh, $offset * 2 * $reclen, 0;
+      read $fh, $x0, $reclen;
+      read $fh, $x1, $reclen;
     } else {
-      $x0 = substr($gi->{buf}, $offset * 2 * $gi->{"record_length"}, $gi->{"record_length"});
-      $x1 = substr($gi->{buf}, $offset * 2 * $gi->{"record_length"} + $gi->{"record_length"}, $gi->{"record_length"});
+      
+      $x0 = substr($gi->{buf}, $offset * 2 * $reclen, $reclen);
+      $x1 = substr($gi->{buf}, $offset * 2 * $reclen + $reclen, $reclen);
     }
 
     $x0 = unpack("V1", $x0."\0");
@@ -282,10 +312,16 @@ sub get_city_record {
   }
   #set the record pointer to location of the city record
   my $record_pointer = $seek_country + (2 * $gi->{"record_length"} - 1) * $gi->{"databaseSegments"};
-  seek($gi->{"fh"}, $record_pointer, 0);
 
-  read($gi->{"fh"},$record_buf,FULL_RECORD_LENGTH);
-  $record_buf_pos = 0;
+  unless ( exists $gi->{buf} ) {
+    seek( $gi->{"fh"}, $record_pointer, 0 );
+    read( $gi->{"fh"}, $record_buf, FULL_RECORD_LENGTH );
+    $record_buf_pos = 0;
+  }
+  else {
+	  $record_buf = substr($gi->{buf}, $record_pointer, FULL_RECORD_LENGTH);
+    $record_buf_pos = 0;
+  }
 
   #get the country
   $char = ord(substr($record_buf,$record_buf_pos,1));
@@ -396,8 +432,14 @@ sub org_by_name {
   }
 
   $record_pointer = $seek_org + (2 * $gi->{"record_length"} - 1) * $gi->{"databaseSegments"};
-  seek($gi->{"fh"}, $record_pointer, 0);
-  read($gi->{"fh"},$org_buf,MAX_ORG_RECORD_LENGTH);
+
+  unless ( exists $gi->{buf} ) {
+    seek( $gi->{"fh"}, $record_pointer, 0 );
+    read( $gi->{"fh"}, $org_buf, MAX_ORG_RECORD_LENGTH );
+  }
+  else {
+    $org_buf = substr($gi->{buf}, $record_pointer, MAX_ORG_RECORD_LENGTH );
+  }
 
   $char = ord(substr($org_buf,0,1));
   while ($char != 0) {
@@ -498,7 +540,14 @@ sub database_info {
   }   
   return "";
 }
+sub DESTROY {
+  my $gi = shift;
 
+  if ( exists $gi->{buf} && $gi->{flags} && ( $gi->{flags} & GEOIP_MMAP_CACHE ) ) {
+    munmap( $gi->{buf} ) or die "munmap: $!";
+	  delete $gi->{buf};
+  }
+}
 1;
 __END__
 
