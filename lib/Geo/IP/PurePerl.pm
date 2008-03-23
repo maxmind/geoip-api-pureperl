@@ -697,11 +697,18 @@ http://sourceforge.net/projects/geoip/
 
 =head1 VERSION
 
-1.16
+1.19
+
+=head1 SEE ALSO
+
+Geo::IP - this now has the PurePerl code merged it, so it supports
+both XS and Pure Perl implementations.  The XS implementation is
+a wrapper around the GeoIP C API, which is much faster than the
+Pure Perl API.
 
 =head1 AUTHOR
 
-Copyright (c) 2005 MaxMind LLC
+Copyright (c) 2008 MaxMind Inc
 
 All rights reserved.  This package is free software; it is licensed
 under the GPL.
