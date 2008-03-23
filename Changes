@@ -1,8 +1,9 @@
 Revision history for Perl extension Geo::IP::PurePerl.
 
+1.19  March 22nd, 2008
+	Added BL/Saint Barthelemy, MF/Saint Martin (ISO-3166-1 additions)
         Change default database name for NetWare to sys:/etc/GeoIP/GeoIP.dat
                  and MSWin32 to c:/GeoIP/GeoIP.dat ( Guenter Knauf )
-
 	Country, City and Org requests benefit from GEOIP_MEMORY_CACHE and GEOIP_MMAP_CACHE
 	Add GEOIP_MMAP_CACHE support ( Peter Shipley ) 
 	Now works with new format of GeoIP ISP
