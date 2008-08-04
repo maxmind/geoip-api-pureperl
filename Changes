@@ -1,5 +1,8 @@
 Revision history for Perl extension Geo::IP::PurePerl.
 
+1.20 August 4th, 2008
+	Add missing country/country code 'Other' ( Boris Zentner )
+
 1.19  March 22nd, 2008
 	Added BL/Saint Barthelemy, MF/Saint Martin (ISO-3166-1 additions)
         Change default database name for NetWare to sys:/etc/GeoIP/GeoIP.dat
