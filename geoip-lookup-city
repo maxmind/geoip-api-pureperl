@@ -10,7 +10,7 @@ my $addr = shift;
 my $gi = Geo::IP::PurePerl->new("/usr/local/share/GeoIP/GeoIPCity.dat",GEOIP_STANDARD);
 
 if ($addr){
-  my ($country_code,$country_code3,$country_name,$region,$city,$postal_code,$latitude,$longitude,$dma_code,$area_code) = $gi->get_city_record($addr);
+  my ($country_code,$country_code3,$country_name,$region,$city,$postal_code,$latitude,$longitude,$dma_code,$area_code, $metro_code) = $gi->get_city_record($addr);
 
   print $country_code . "\n";
   print $country_code3 . "\n";
@@ -22,6 +22,7 @@ if ($addr){
   print $longitude . "\n";
   print $dma_code . "\n";
   print $area_code . "\n";
+  print $metro_code . "\n";
 } else {
   print STDERR "Usage: $0 ipaddr\n";
   exit;

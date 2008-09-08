@@ -1,5 +1,6 @@
 Revision history for Perl extension Geo::IP::PurePerl.
-
+1.21 September 8th, 2008
+	metro_code is a replacement for the depreciated dma_code ( Boris Zentner )
 1.20 August 4th, 2008
 	Add missing country/country code 'Other' ( Boris Zentner )
 

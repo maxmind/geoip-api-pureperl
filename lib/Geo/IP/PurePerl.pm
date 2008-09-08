@@ -30,7 +30,7 @@ use constant CANADA_OFFSET => 677;
 use constant WORLD_OFFSET => 1353;
 use constant FIPS_RANGE => 360;
 
-$VERSION = '1.20';
+$VERSION = '1.21';
 
 require Exporter;
 @ISA = qw(Exporter);
@@ -326,7 +326,7 @@ sub get_city_record {
   my $record_buf;
   my $record_buf_pos;
   my $char;
-  my $dmaarea_combo;
+  my $metroarea_combo;
   my $record_country_code = "";
   my $record_country_code3 = "";
   my $record_country_name = "";
@@ -335,7 +335,7 @@ sub get_city_record {
   my $record_postal_code = "";
   my $record_latitude = "";
   my $record_longitude = "";
-  my $record_dma_code = "";
+  my $record_metro_code = "";
   my $record_area_code = "";
   my $str_length = 0;
   my $i;
@@ -420,36 +420,31 @@ sub get_city_record {
 
   #get the dma code and the area code
   if (GEOIP_CITY_EDITION_REV1 == $gi->{"databaseType"}) {
-    $dmaarea_combo = 0;
+    $metroarea_combo = 0;
     if ($record_country_code eq "US") {
       #if the country is US then read the dma area combo
       for ($j = 0;$j < 3;++$j) {
         $char = ord(substr($record_buf,$record_buf_pos++,1));
-        $dmaarea_combo += ($char << ($j * 8));
+        $metroarea_combo += ($char << ($j * 8));
       }
       #split the dma area combo into the dma code and the area code
-      $record_dma_code = int($dmaarea_combo/1000);
-      $record_area_code = $dmaarea_combo%1000;
+      $record_metro_code = int($metroarea_combo/1000);
+      $record_area_code = $metroarea_combo%1000;
     }
   }
-  return ($record_country_code,$record_country_code3,$record_country_name,$record_region,$record_city,$record_postal_code,$record_latitude,$record_longitude,$record_dma_code,$record_area_code);
+  return ($record_country_code,$record_country_code3,$record_country_name,$record_region,$record_city,$record_postal_code,$record_latitude,$record_longitude,$record_metro_code,$record_area_code);
 }
 
 #this function returns the city record as a hash ref
 sub get_city_record_as_hash {
   my ($gi, $host) = @_;
   my %h;
-  my @a = $gi->get_city_record($host);
-  $h{"country_code"} = $a[0];
-  $h{"country_code3"} = $a[1];
-  $h{"country_name"} = $a[2];
-  $h{"region"} = $a[3];
-  $h{"city"} = $a[4];
-  $h{"postal_code"} = $a[5];
-  $h{"latitude"} = $a[6];
-  $h{"longitude"} = $a[7];
-  $h{"dma_code"} = $a[8];
-  $h{"area_code"} = $a[9];
+  @h{qw/ country_code country_code3 country_name 
+         region       city          postal_code
+		 latitude     longitude     metro_code
+		 area_code                  /} 
+		 = $gi->get_city_record($host);
+  $h{dma_code} = $h{metro_code}; # alias for depreciated dma_code
   return \%h;
 }
 
@@ -688,6 +683,21 @@ Returns the full country name for a hostname.
 
 Returns database string, includes version, date, build number and copyright notice.
 
+=item @data = get_city_record( $addr ); 
+
+ Returns a array filled with information about the city.
+
+  my ($country_code,$country_code3,$country_name,$region,$city,$postal_code,$latitude,$longitude,$metro_code,$area_code ) = $gi->get_city_record($addr);
+
+=item $href = get_city_record_as_hash( $addr ); 
+
+ Returns a hashref filled with information about the city.
+
+  my $href = $gi->get_city_record($addr);
+
+The hash include the following keys:
+country_code, country_code3, country_name, region, city, postal_code, latitude, longitude, metro_code, area_code, dma_code
+
 =back
 
 =head1 MAILING LISTS AND CVS
@@ -697,7 +707,7 @@ http://sourceforge.net/projects/geoip/
 
 =head1 VERSION
 
-1.19
+1.21
 
 =head1 SEE ALSO
 
