@@ -1,6 +1,7 @@
 Revision history for Perl extension Geo::IP::PurePerl.
-1.22 September 16th, 2008
-	Update comments about metro_code.
+1.22 September 30th, 2008
+	fix geoip-lookup-city.pl example ( Boris Zentner )
+	Update comments about metro_code
 1.21 September 10th, 2008
 	metro_code is a replacement for the depreciated dma_code ( Boris Zentner )
 1.20 August 4th, 2008
