@@ -693,7 +693,7 @@ Returns database string, includes version, date, build number and copyright noti
 
  Returns a hashref filled with information about the city.
 
-  my $href = $gi->get_city_record($addr);
+  my $href = $gi->get_city_record_as_hash($addr);
 
 The hash include the following keys:
 country_code, country_code3, country_name, region, city, postal_code, latitude, longitude, metro_code, area_code

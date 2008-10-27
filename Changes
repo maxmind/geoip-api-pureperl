@@ -1,3 +1,4 @@
+	Fix doc typo the correct methodname is get_city_record_as_hash ( Boris Zentner ) 
 Revision history for Perl extension Geo::IP::PurePerl.
 1.22 September 30th, 2008
 	fix geoip-lookup-city.pl example ( Boris Zentner )
