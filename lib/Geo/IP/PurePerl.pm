@@ -483,11 +483,10 @@ sub org_by_name {
 }
 
 #this function returns isp or org of the domain name
-sub isp_by_name {
-  my ($gi, $host) = @_;
-  $gi->org_by_name($host);
-}
+*isp_by_name = \*org_by_name;
 
+*org_by_addr = \*org_by_name;
+*isp_by_addr = \*org_by_name;
 
 #this function returns the region
 sub region_by_name {
@@ -683,7 +682,7 @@ Returns the full country name for a hostname.
 
 Returns database string, includes version, date, build number and copyright notice.
 
-=item @data = get_city_record( $addr ); 
+=item @data = $gi->get_city_record( $addr ); 
 
  Returns a array filled with information about the city.
 
@@ -697,6 +696,22 @@ Returns database string, includes version, date, build number and copyright noti
 
 The hash include the following keys:
 country_code, country_code3, country_name, region, city, postal_code, latitude, longitude, metro_code, area_code
+
+=item $gi->isp_by_addr($addr)
+
+ Returns the isp name for an ipaddress
+
+=item $gi->isp_by_name($name)
+
+ Returns the isp name for a hostname
+
+=item $gi->org_by_addr($addr)
+
+ Returns the organisation name for an ipaddress
+
+=item $gi->org_by_name($name)
+
+ Returns the organisation name for a hostname
 
 =back
 
