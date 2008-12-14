@@ -2,8 +2,30 @@ package Geo::IP::PurePerl;
 
 use strict;
 use FileHandle;
+use File::Spec;
 
-use vars qw(@ISA $VERSION @EXPORT);
+BEGIN {
+  if ( $] >= 5.008 ) {
+    require Encode;
+    Encode->import(qw/ decode /);
+  }
+  else {
+    *decode = sub {
+      local $_ = $_[1];
+      use bytes;
+       s/([\x80-\xff])/my $c = ord($1);
+           my $p = $c >= 192 ? 1 : 0; 
+           pack ( 'CC' => 0xc2 + $p , $c & ~0x40 ); /ge;
+       return $_;
+    };
+  }
+};
+
+
+use vars qw( @ISA $VERSION @EXPORT $OPEN_TYPE_PATH );
+
+use constant GEOIP_CHARSET_ISO_8859_1 => 0;
+use constant GEOIP_CHARSET_UTF8 => 1;
 
 use constant FULL_RECORD_LENGTH => 50;
 use constant GEOIP_COUNTRY_BEGIN => 16776960;
@@ -19,7 +41,10 @@ use constant GEOIP_CITY_EDITION_REV0 => 111;
 use constant GEOIP_CITY_EDITION_REV1 => 2;
 use constant GEOIP_ORG_EDITION => 110;
 use constant GEOIP_ISP_EDITION => 4;
+use constant GEOIP_PROXY_EDITION => 8;
+use constant GEOIP_ASNUM_EDITION => 9;
 use constant GEOIP_NETSPEED_EDITION => 10;
+use constant GEOIP_DOMAIN_EDITION => 11;
 use constant SEGMENT_RECORD_LENGTH => 3;
 use constant STANDARD_RECORD_LENGTH => 3;
 use constant ORG_RECORD_LENGTH => 4;
@@ -30,7 +55,7 @@ use constant CANADA_OFFSET => 677;
 use constant WORLD_OFFSET => 1353;
 use constant FIPS_RANGE => 360;
 
-$VERSION = '1.22';
+$VERSION = '1.23';
 
 require Exporter;
 @ISA = qw(Exporter);
@@ -96,6 +121,50 @@ my @names = (undef,"Asia/Pacific Region","Europe","Andorra","United Arab Emirate
 	"Wallis and Futuna","Samoa","Yemen","Mayotte","Serbia","South Africa","Zambia","Montenegro","Zimbabwe","Anonymous Proxy",
 	"Satellite Provider","Other","Aland Islands","Guernsey","Isle of Man","Jersey","Saint Barthelemy","Saint Martin");
 
+
+# --- unfortunately we do not know the path so we assume the 
+# default path /usr/local/share/GeoIP
+# if thats not true, you can set $Geo::IP::PurePerl::OPEN_TYPE_PATH
+#
+sub open_type {
+  my ( $class, $type, $flags ) = @_;
+  my %type_dat_name_mapper = (
+    GEOIP_COUNTRY_EDITION()     => 'GeoIP',
+    GEOIP_REGION_EDITION_REV0() => 'GeoIPRegion',
+    GEOIP_REGION_EDITION_REV1() => 'GeoIPRegion',
+    GEOIP_CITY_EDITION_REV0()   => 'GeoIPCity',
+    GEOIP_CITY_EDITION_REV1()   => 'GeoIPCity',
+    GEOIP_ISP_EDITION()         => 'GeoIPISP',
+    GEOIP_ORG_EDITION()         => 'GeoIPOrg',
+    GEOIP_PROXY_EDITION()       => 'GeoIPProxy',
+    GEOIP_ASNUM_EDITION()       => 'GeoIPASNum',
+    GEOIP_NETSPEED_EDITION()    => 'GeoIPNetSpeed',
+    GEOIP_DOMAIN_EDITION()      => 'GeoIPDomain',
+  );
+
+  my $name = $type_dat_name_mapper{$type};
+  die("Invalid database type $type\n") unless $name;
+
+  my $mkpath = sub { File::Spec->catfile( File::Spec->rootdir, @_ ) };
+
+  my $path =
+    defined $Geo::IP::PurePerl::OPEN_TYPE_PATH
+    ? $Geo::IP::PurePerl::OPEN_TYPE_PATH
+    : do {
+    $^O eq 'NetWare'
+      ? $mkpath->(qw/ etc GeoIP /)
+      : do {
+            $^O eq 'MSWin32'
+        ? $mkpath->(qw/ GeoIP /)
+        : $mkpath->(qw/ usr local share GeoIP /);
+      }
+    };
+
+  my $filename = File::Spec->catfile( $path, $name . '.dat' );
+  return $class->open( $filename, $flags );
+}
+
+
 sub open {
   die "Geo::IP::PurePerl::open() requires a path name"
     unless( @_ > 1 and $_[1] );
@@ -159,7 +228,7 @@ sub _setup_segments {
   my $j = 0;
   my $delim;
   my $buf;
-  
+  $gi->{_charset} = GEOIP_CHARSET_ISO_8859_1;
   $gi->{"databaseType"} = GEOIP_COUNTRY_EDITION;
   $gi->{"record_length"} = STANDARD_RECORD_LENGTH;
 
@@ -244,18 +313,31 @@ sub _seek_country {
 
     if ($ipnum & (1 << $depth)) {
       if ($x1 >= $gi->{"databaseSegments"}) {
-	return $x1;
+        $gi->{last_netmask} = 32 - $depth;	  
+        return $x1;
       }
       $offset = $x1;
     } else {
       if ($x0 >= $gi->{"databaseSegments"}) {
-	return $x0;
+        $gi->{last_netmask} = 32 - $depth;
+	    return $x0;
       }
       $offset = $x0;
     }
   }
 
   print STDERR "Error Traversing Database for ipnum = $ipnum - Perhaps database is corrupt?";
+}
+sub charset {
+  return $_[0]->{_charset};
+}
+
+sub set_charset{
+  my ( $gi, $charset ) = @_;
+  my $old_charset      = $gi->{_charset};
+  $gi->{_charset}      = $charset;
+
+  return $old_charset;
 }
 
 #this function returns the country code of ip address
@@ -432,6 +514,12 @@ sub get_city_record {
       $record_area_code = $metroarea_combo%1000;
     }
   }
+  
+  # the pureperl API must convert the string by themself to UTF8
+  # using Encode for perl >= 5.008 otherwise use it's own iso-8859-1 to utf8      converter
+   $record_city = decode( 'iso-8859-1' => $record_city )
+     if $gi->charset == GEOIP_CHARSET_UTF8;
+
   return ($record_country_code,$record_country_code3,$record_country_name,$record_region,$record_city,$record_postal_code,$record_latitude,$record_longitude,$record_metro_code,$record_area_code);
 }
 
@@ -534,10 +622,8 @@ sub get_ip_address {
   return $ip_address;
 }
 
-sub addr_to_num {
-  my @a = split('\.',$_[0]);
-  return $a[0]*16777216+$a[1]*65536+$a[2]*256+$a[3];
-}
+sub addr_to_num { unpack( N => pack( C4 => split( /\./, $_[0] ) ) ) }
+sub num_to_addr { join q{.}, unpack( C4 => pack( N => $_[0] ) ) }
 
 sub database_info {
   my $gi = shift;
@@ -570,6 +656,36 @@ sub database_info {
   }   
   return "";
 }
+
+sub range_by_ip {
+  my $gi = shift;
+  my $ipnum          = addr_to_num( shift );
+  my $c              = $gi->_seek_country( $ipnum );
+  my $nm             = $gi->last_netmask;
+  my $m              = 0xffffffff << 32 - $nm;
+  my $left_seek_num  = $ipnum & $m;
+  my $right_seek_num = $left_seek_num + ( 0xffffffff & ~$m );
+
+  while ( $left_seek_num != 0
+          and $c == $gi->_seek_country(  $left_seek_num - 1) ) {
+    my $lm = 0xffffffff << 32 - $gi->last_netmask;
+    $left_seek_num = ( $left_seek_num - 1 ) & $lm;
+  }
+  while ( $right_seek_num != 0xffffffff
+          and $c == $gi->_seek_country( $right_seek_num + 1 ) ) {
+    my $rm = 0xffffffff << 32 - $gi->last_netmask;
+    $right_seek_num = ( $right_seek_num + 1 ) & $rm;
+    $right_seek_num += ( 0xffffffff & ~$rm );
+  }
+  return ( num_to_addr($left_seek_num), num_to_addr($right_seek_num) );
+}
+
+sub netmask { $_[0]->{last_netmask} = $_[1] }
+
+sub last_netmask {
+  return $_[0]->{last_netmask};
+}
+
 sub DESTROY {
   my $gi = shift;
 
@@ -682,6 +798,27 @@ Returns the full country name for a hostname.
 
 Returns database string, includes version, date, build number and copyright notice.
 
+=item $old_charset = $gi->set_charset( $charset );
+
+Set the charset for the city name - defaults to GEOIP_CHARSET_ISO_8859_1.  To
+set UTF8, pass GEOIP_CHARSET_UTF8 to set_charset.
+
+=item $charset = $gi->charset;
+
+Gets the currently used charset.
+
+=item $netmask = $gi->last_netmask;
+
+Gets netmask of network block from last lookup.
+
+=item $gi->netmask(12);
+
+Sets netmask for the last lookup
+
+=item my ( $from, $to ) = $gi->range_by_ip('24.24.24.24');
+
+Returns the start and end of the current network block. The method tries to join several continous netblocks.
+
 =item @data = $gi->get_city_record( $addr ); 
 
  Returns a array filled with information about the city.
@@ -722,7 +859,7 @@ http://sourceforge.net/projects/geoip/
 
 =head1 VERSION
 
-1.22
+1.23
 
 =head1 SEE ALSO
 

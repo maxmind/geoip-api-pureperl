@@ -1,3 +1,12 @@
+	Backport changes from Geo::IP. New methods ( Boris Zentner )
+		
+		open_type
+		charset
+		set_charset
+		netmask
+		last_netmask
+		range_by_ip
+
 	Add org_by_addr and isp_by_addr ( Boris Zentner )
 	Fix doc typo the correct methodname is get_city_record_as_hash ( Boris Zentner ) 
 Revision history for Perl extension Geo::IP::PurePerl.
