@@ -1,3 +1,4 @@
+1.23 December 15th, 2008
 	Backport changes from Geo::IP. New methods ( Boris Zentner )
 		
 		open_type
