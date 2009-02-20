@@ -1,4 +1,5 @@
 Revision history for Perl extension Geo::IP::PurePerl.
+	Fix 3 letter country code for Romaina ( Boris Zentner )
 1.23 December 15th, 2008
 	Backport changes from Geo::IP. New methods ( Boris Zentner )
 		
