@@ -34,12 +34,12 @@ use constant GEOIP_STATE_BEGIN_REV0 => 16700000;
 use constant GEOIP_STATE_BEGIN_REV1 => 16000000;
 use constant STRUCTURE_INFO_MAX_SIZE => 20;
 use constant DATABASE_INFO_MAX_SIZE => 100;
-use constant GEOIP_COUNTRY_EDITION => 106;
-use constant GEOIP_REGION_EDITION_REV0 => 112;
+use constant GEOIP_COUNTRY_EDITION => 1;
+use constant GEOIP_REGION_EDITION_REV0 => 7; 
 use constant GEOIP_REGION_EDITION_REV1 => 3;
-use constant GEOIP_CITY_EDITION_REV0 => 111;
+use constant GEOIP_CITY_EDITION_REV0 => 6;
 use constant GEOIP_CITY_EDITION_REV1 => 2;
-use constant GEOIP_ORG_EDITION => 110;
+use constant GEOIP_ORG_EDITION => 5;
 use constant GEOIP_ISP_EDITION => 4;
 use constant GEOIP_PROXY_EDITION => 8;
 use constant GEOIP_ASNUM_EDITION => 9;
@@ -142,6 +142,9 @@ sub open_type {
     GEOIP_DOMAIN_EDITION()      => 'GeoIPDomain',
   );
 
+  # backward compatibility for 2003 databases.
+  $type -= 105 if $type >= 106;
+
   my $name = $type_dat_name_mapper{$type};
   die("Invalid database type $type\n") unless $name;
 
@@ -243,6 +246,9 @@ sub _setup_segments {
       
       #read the databasetype
       $gi->{"databaseType"} = ord($a);
+
+      # backward compatibility for 2003 databases.
+      $gi->{databaseType} -= 105 if $gi->{databaseType} >= 106;
 
       #chose the database segment for the database type
       #if database Type is GEOIP_REGION_EDITION then use database segment GEOIP_STATE_BEGIN
@@ -583,7 +589,7 @@ sub region_by_name {
   return unless $ip_address;
   if ($gi->{"databaseType"} == GEOIP_REGION_EDITION_REV0) {
     my $seek_region = $gi->_seek_country(addr_to_num($ip_address)) - GEOIP_STATE_BEGIN_REV0;
-    if ($seek_region < 1000) {
+    if ($seek_region >= 1000) {
       return ("US",chr(($seek_region - 1000)/26 + 65) . chr(($seek_region - 1000)%26 + 65));
     } else {
       return ($countries[$seek_region],"");
