@@ -1,4 +1,7 @@
 Revision history for Perl extension Geo::IP::PurePerl.
+1.24  September 22th, 2009
+        Work around mod_perl centos issue ( Boris Zentner )
+        Add ASNum database support ( Boris Zentner )
         Fix using region rev0 databases ( Boris Zentner )
         Handle database types similar to the CAPI ( Boris Zentner )
 	Fix 3 letter country code for Romaina ( Boris Zentner )

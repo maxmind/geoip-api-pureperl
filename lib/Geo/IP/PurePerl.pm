@@ -62,15 +62,21 @@ require Exporter;
 
 # cheat --- try to load Sys::Mmap
 BEGIN {
-  eval "require Sys::Mmap"
-    ? Sys::Mmap->import
-    : do {
-    for (qw/ PROT_READ MAP_PRIVATE MAP_SHARED /) {
-      no strict 'refs';
-      my $unused_stub = $_; # we must use a copy
-      *$unused_stub = sub { die 'Sys::Mmap required for mmap support' };
-    }
-  } # do
+  eval { 
+     # wrap into eval again, as workaround for centos / mod_perl issue
+     # seems they use $@ without eval somewhere
+    
+    eval "require Sys::Mmap"
+      ? Sys::Mmap->import
+      : do {
+        for (qw/ PROT_READ MAP_PRIVATE MAP_SHARED /) {
+          no strict 'refs';
+          my $unused_stub = $_; # we must use a copy
+          *$unused_stub = sub { die 'Sys::Mmap required for mmap support' };
+        } # for
+      }; # do
+    1;
+  }; # eval
 } # begin
 
 
@@ -263,6 +269,7 @@ sub _setup_segments {
       elsif (($gi->{"databaseType"} == GEOIP_CITY_EDITION_REV0) ||
         ($gi->{"databaseType"} == GEOIP_CITY_EDITION_REV1) ||
         ($gi->{"databaseType"} == GEOIP_ORG_EDITION) ||
+        ($gi->{"databaseType"} == GEOIP_ASNUM_EDITION) ||
         ($gi->{"databaseType"} == GEOIP_ISP_EDITION)) {
         $gi->{"databaseSegments"} = 0;
 
