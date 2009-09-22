@@ -270,6 +270,7 @@ sub _setup_segments {
         ($gi->{"databaseType"} == GEOIP_CITY_EDITION_REV1) ||
         ($gi->{"databaseType"} == GEOIP_ORG_EDITION) ||
         ($gi->{"databaseType"} == GEOIP_ASNUM_EDITION) ||
+        ($gi->{"databaseType"} == GEOIP_DOMAIN_EDITION) ||
         ($gi->{"databaseType"} == GEOIP_ISP_EDITION)) {
         $gi->{"databaseSegments"} = 0;
 
@@ -283,6 +284,7 @@ sub _setup_segments {
         #record length is three for country databases, region database and city databases
         if ($gi->{"databaseType"} == GEOIP_ORG_EDITION ||
 	    $gi->{"databaseType"} == GEOIP_ISP_EDITION) {
+	    $gi->{"databaseType"} == GEOIP_DOMAIN_EDITION) {
           $gi->{"record_length"} = ORG_RECORD_LENGTH;
         }
       }

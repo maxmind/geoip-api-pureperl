@@ -1,4 +1,5 @@
 Revision history for Perl extension Geo::IP::PurePerl.
+        Add Domain database support ( Boris Zentner )
 1.24  September 22th, 2009
         Work around mod_perl centos issue ( Boris Zentner )
         Add ASNum database support ( Boris Zentner )
