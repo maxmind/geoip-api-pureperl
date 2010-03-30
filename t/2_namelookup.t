@@ -10,7 +10,12 @@ BEGIN {
   }
   unless ($dat) {
     print "1..0 # skip No GeoIP.dat found\n";
-    exit;
+    exit 0;
+  }
+  # CPAN testers lack DNS services sometimes
+  if ( $ENV{AUTOMATED_TESTING} ){
+    print "1..0 # skip cpantesters b/c DNS Service is often not avail";
+    exit 0;
   }
 }
 

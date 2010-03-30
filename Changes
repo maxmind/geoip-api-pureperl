@@ -1,4 +1,6 @@
 Revision history for Perl extension Geo::IP::PurePerl.
+1.25 March 30th, 2010
+        Skip DNS lookups for cpantesters ( Boris Zentner )
         Add Domain database support ( Boris Zentner )
 1.24  September 22th, 2009
         Work around mod_perl centos issue ( Boris Zentner )

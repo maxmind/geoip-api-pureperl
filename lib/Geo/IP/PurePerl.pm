@@ -55,7 +55,7 @@ use constant CANADA_OFFSET => 677;
 use constant WORLD_OFFSET => 1353;
 use constant FIPS_RANGE => 360;
 
-$VERSION = '1.24';
+$VERSION = '1.25';
 
 require Exporter;
 @ISA = qw(Exporter);
@@ -283,9 +283,9 @@ sub _setup_segments {
         #record length is four for ISP databases and ORG databases
         #record length is three for country databases, region database and city databases
         if ($gi->{"databaseType"} == GEOIP_ORG_EDITION ||
-	    $gi->{"databaseType"} == GEOIP_ISP_EDITION) {
-	    $gi->{"databaseType"} == GEOIP_DOMAIN_EDITION) {
-          $gi->{"record_length"} = ORG_RECORD_LENGTH;
+	        $gi->{"databaseType"} == GEOIP_ISP_EDITION ||
+	        $gi->{"databaseType"} == GEOIP_DOMAIN_EDITION) {
+            $gi->{"record_length"} = ORG_RECORD_LENGTH;
         }
       }
       last;
