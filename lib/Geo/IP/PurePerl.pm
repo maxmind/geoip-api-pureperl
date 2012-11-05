@@ -776,6 +776,10 @@ __END__
 
 Geo::IP::PurePerl - Look up country by IP Address
 
+=head1 DEPRECATED
+
+This module has been deprecated in flavor of L<Geo::IP>.
+
 =head1 SYNOPSIS
 
   use Geo::IP::PurePerl;
