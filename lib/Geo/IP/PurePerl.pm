@@ -821,7 +821,7 @@ on a paid subscription basis from http://www.maxmind.com/app/country
 
 =over 4
 
-=item $gi = Geo::IP->new( [$flags] );
+=item $gi = Geo::IP::PurePerl->new( [$flags] );
 
 Constructs a new Geo::IP object with the default database located inside your system's
 I<datadir>, typically I</usr/local/share/GeoIP/GeoIP.dat>.
@@ -830,7 +830,7 @@ Flags can be set to either GEOIP_STANDARD, or for faster performance
 (at a cost of using more memory), GEOIP_MEMORY_CACHE.
 The default flag is GEOIP_STANDARD (uses less memory, but runs slower).
 
-=item $gi = Geo::IP->new( $database_filename );
+=item $gi = Geo::IP::PurePerl->new( $database_filename );
 
 Calling the C<new> constructor in this fashion was was deprecated after version
 0.26 in order to make the XS and pure perl interfaces more similar. Use the
@@ -840,9 +840,9 @@ means of calling C<new> will no longer be supported.
 Flags can be set to either GEOIP_STANDARD, or for faster performance
 (at a cost of using more memory), GEOIP_MEMORY_CACHE.
 
-=item $gi = Geo::IP->open( $database_filename, [$flags] );
+=item $gi = Geo::IP::PurePerl->open( $database_filename, [$flags] );
 
-Constructs a new Geo::IP object with the database located at C<$database_filename>.
+Constructs a new Geo::IP::PurePerl object with the database located at C<$database_filename>.
 The default flag is GEOIP_STANDARD (uses less memory, but runs slower).
 
 =back
