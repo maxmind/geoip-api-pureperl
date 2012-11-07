@@ -940,7 +940,7 @@ http://sourceforge.net/projects/geoip/
 
 =head1 VERSION
 
-1.25
+1.26
 
 =head1 SEE ALSO
 
@@ -951,7 +951,7 @@ Pure Perl API.
 
 =head1 AUTHOR
 
-Copyright (c) 2010 MaxMind Inc
+Copyright (c) 2012 MaxMind Inc
 
 All rights reserved.  This package is free software; it is licensed
 under the GPL.
