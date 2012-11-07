@@ -1,5 +1,7 @@
 Revision history for Perl extension Geo::IP::PurePerl.
 1.26 May 22th, 2012
+        Please notice that this module is deprecated in flavor of
+	Geo::IP. Geo::IP::PurePerl has merged with Geo::IP.
         Update country names and codes ( Boris Zentner )
 1.25 March 30th, 2010
         Skip DNS lookups for cpantesters ( Boris Zentner )
