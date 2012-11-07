@@ -778,9 +778,8 @@ Geo::IP::PurePerl - Look up country by IP Address
 
 =head1 DEPRECATED
 
-This module has been deprecated in flavor of L<Geo::IP>.
-L<Geo::IP> use the faster CAPI if possible. Otherwise,
-the pure perl functions are used.
+This module has been deprecated, please use L<Geo::IP> instead.
+Geo::IP::PurePerl has been merged with Geo::IP.
 
 =head1 SYNOPSIS
 
