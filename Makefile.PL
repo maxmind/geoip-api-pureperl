@@ -7,4 +7,7 @@ WriteMakefile(
                'VERSION_FROM' => 'lib/Geo/IP/PurePerl.pm', # finds $VERSION
                'EXE_FILES'    => ['geoip-lookup'],
                PREREQ_PM      => { 'File::Spec' => 0 },
+               META_MERGE => {
+                   x_deprecated => 1,
+               },
 );
